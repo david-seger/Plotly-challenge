@@ -8,6 +8,7 @@ let bellyButtonMetadata = [];
 let bellyButtonSamples = [];
 let filteredBellyButtonSamples = [];
 let filteredBellyButtonData = [];
+let filteredBellyButtonMetadata = [];
 let demoText = [];
 
 d3.json('samples.json').then(bellyButtonData => {
@@ -43,7 +44,7 @@ bellyButtonNames.forEach((item) => {
 
 const optionChanged = () => {
   console.log("Drop Down");
-  let demographicsTable = d3.select("#demographics-table");
+  let demographicsTable = d3.select("#sample-metadata");
 
   demographicsTable.html("");
   let inputElement = d3.select("#selDataset");
@@ -54,14 +55,19 @@ const optionChanged = () => {
   filteredBellyButtonData = bellyButtonMetadata.filter(item => item.id == selectedSubject);
   filteredBellyButtonSamples = bellyButtonSamples.filter(item => item.id == selectedSubject);
 
+  console.log(filteredBellyButtonData)
+  
   filteredBellyButtonData.forEach((item) => {
     let row = tableBody.append("tr");
     Object.entries(item).forEach(value => {
-      let cell = row.append("tr");
+      let row = tableBody.append("tr");
+      let cell = row.append("td");
       cell.text("");
       cell.text(`${value[0]}: ${value[1]}`);
     });
   });
+
+  console.log(tableBody);
 
   let slicedBellyButtonSampleValues = filteredBellyButtonSamples[0].sample_values.slice(0, 10).reverse();
   let slicedBellyButtonOTUs = filteredBellyButtonSamples[0].otu_ids.slice(0, 10).reverse().map(data => `OTU ` + data);
@@ -81,6 +87,7 @@ const optionChanged = () => {
     xaxis: { title: "Prevalence in Sample" },
     yaxis: { title: "OTU ID Number" }
   };
+
   Plotly.newPlot("bar", bellyButtonBarData, bellyButtonBarLayout);
 
   let size = filteredBellyButtonSamples[0].sample_values;
@@ -97,6 +104,7 @@ const optionChanged = () => {
       color: filteredBellyButtonSamples[0].otu_ids,
     }
   };
+
   let bubbledata = [trace2];
   let bubblelayout = {
     title: "OTU Prevalence in Sample",
@@ -105,45 +113,5 @@ const optionChanged = () => {
   };
 
   Plotly.newPlot("bubble", bubbledata, bubblelayout);
-       
-  
-  // Dinamic Demographics
-  let bbDemographicsID = bellyButtonMetadata[0].id
-  let bbDemographicsEthnicity = bellyButtonMetadata[0].ethnicity
-  let bbDemographicsGender = bellyButtonMetadata[0].gender
-  let bbDemographicsAge = bellyButtonMetadata[0].age
-  let bbDemographicsLocation = bellyButtonMetadata[0].location
-  let bbDemographicsBBtype = bellyButtonMetadata.metadata[0].bbtype
-  let bbDemographicsWfreq = bellyButtonMetadata.metadata[0].wfreq
-  let table = d3.select('tbody')
 
-  table.html('')
-  
-  let row = table.append('tr')
-  let cell = row.append('td')
-  cell.text(`Id: ${bbDemographicsID}`)
-  
-  let row2 = table.append('tr')
-  let cell2 = row2.append('td')
-  cell2.text(`Ethnicity: ${bbDemographicsEthnicity}`)
-  
-  let row3 = table.append('tr')
-  let cell3 = row3.append('td')
-  cell3.text(`Gender: ${bbDemographicsGender}`)
-  
-  let row4 = table.append('tr')
-  let cell4 = row4.append('td')
-  cell4.text(`Age: ${bbDemographicsAge}`)
-  
-  let row5 = table.append('tr')
-  let cell5 = row5.append('td')
-  cell5.text(`Location: ${bbDemographicsLocation}`)
-
-  let row6 = table.append('tr')
-  let cell6 = row6.append('td')
-  cell6.text(`BB Type: ${bbDemographicsBBtype}`)
-        
-  let row7 = table.append('tr')
-  let cell7 = row7.append('td')
-  cell7.text(`Washing Freq: ${bbDemographicsWfreq}`)
-}
+};
